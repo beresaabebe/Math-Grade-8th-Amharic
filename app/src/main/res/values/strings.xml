@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">ሒሳብ የተማሪ መጽሐፍት 8ኛ ክፍል</string>
+    <string name="about_us">ስለ እኛ</string>
+    <string name="more_apps">ተጨማሪ መተግበሪያዎች</string>
+    <string name="rate">ደረጃ መስጠት</string>
+    <string name="update">አዘምን</string>
+    <string name="share">አጋራ</string>
+    <string name="exit">ውጣ</string>
+    <string name="change_style">Change style</string>
+    <string name="website">Website</string>
+    <string name="email">Email</string>
+    <string name="facebook">Facebook</string>
+    <string name="phone">Phone</string>
+    <string name="version">Version - </string>
+    <string name="banner_ad_unit_id">ca-app-pub-8504401574247581/4981219237</string>
+    <string name="test_interstitial_ads_unit_id">ca-app-pub-8504401574247581/5453660823</string>
+</resources>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "725857568850",
+    "project_id": "maths-grade-8-amharic",
+    "storage_bucket": "maths-grade-8-amharic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725857568850:android:fc6e100db1c4d4f110378b",
+        "android_client_info": {
+          "package_name": "com.beckytech.mathsgrade8amharic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "725857568850-bf4d1o09se7f4qm3ddm3i1qsna0jfvko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNmLHzHyfVYq8mnIgf1X5aY2lopKamgnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "725857568850-bf4d1o09se7f4qm3ddm3i1qsna0jfvko.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
