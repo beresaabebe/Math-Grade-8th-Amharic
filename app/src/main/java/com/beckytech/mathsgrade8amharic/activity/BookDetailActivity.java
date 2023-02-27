@@ -2,14 +2,18 @@ package com.beckytech.mathsgrade8amharic.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.beckytech.mathsgrade8amharic.R;
-import com.beckytech.mathsgrade8amharic.contents.ContentEndPage;
-import com.beckytech.mathsgrade8amharic.contents.ContentStartPage;
 import com.beckytech.mathsgrade8amharic.model.Model;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AudienceNetworkAds;
+import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.InterstitialAdListener;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.android.gms.ads.AdRequest;
@@ -20,14 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookDetailActivity extends AppCompatActivity {
-
-    private final ContentStartPage startPage = new ContentStartPage();
-    private final ContentEndPage endPage = new ContentEndPage();
-
+    com.facebook.ads.InterstitialAd interstitialAd;
+    private final String TAG = BookDetailActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
+
+        callAds();
 
         MobileAds.initialize(this, initializationStatus -> {
         });
@@ -76,4 +80,57 @@ public class BookDetailActivity extends AppCompatActivity {
                 .scrollHandle(new DefaultScrollHandle(this))
                 .load();
     }
+    private void callAds() {
+        AudienceNetworkAds.initialize(this);
+
+        interstitialAd = new InterstitialAd(this, "587359836775376_587369080107785");
+        // Create listeners for the Interstitial Ad
+        InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
+            @Override
+            public void onInterstitialDisplayed(Ad ad) {
+                // Interstitial ad displayed callback
+                Log.e(TAG, "Interstitial ad displayed.");
+            }
+
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+                // Interstitial dismissed callback
+                Log.e(TAG, "Interstitial ad dismissed.");
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                // Ad error callback
+                Log.e(TAG, "Interstitial ad failed to load: " + adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                // Interstitial ad is loaded and ready to be displayed
+                Log.d(TAG, "Interstitial ad is loaded and ready to be displayed!");
+                // Show the ad
+                interstitialAd.show();
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Ad clicked callback
+                Log.d(TAG, "Interstitial ad clicked!");
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Ad impression logged callback
+                Log.d(TAG, "Interstitial ad impression logged!");
+            }
+        };
+
+        // For auto play video ads, it's recommended to load the ad
+        // at least 30 seconds before it is shown
+        interstitialAd.loadAd(
+                interstitialAd.buildLoadAdConfig()
+                        .withAdListener(interstitialAdListener)
+                        .build());
+    }
+
 }

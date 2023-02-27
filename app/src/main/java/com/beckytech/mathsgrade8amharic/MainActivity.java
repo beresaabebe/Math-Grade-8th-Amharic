@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,11 +21,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.beckytech.mathsgrade8amharic.activity.AboutActivity;
 import com.beckytech.mathsgrade8amharic.activity.BookDetailActivity;
 import com.beckytech.mathsgrade8amharic.adapter.Adapter;
+import com.beckytech.mathsgrade8amharic.adapter.MoreAppsAdapter;
 import com.beckytech.mathsgrade8amharic.contents.ContentEndPage;
 import com.beckytech.mathsgrade8amharic.contents.ContentStartPage;
+import com.beckytech.mathsgrade8amharic.contents.MoreAppImages;
+import com.beckytech.mathsgrade8amharic.contents.MoreAppUrl;
+import com.beckytech.mathsgrade8amharic.contents.MoreAppsName;
 import com.beckytech.mathsgrade8amharic.contents.SubTitleContents;
 import com.beckytech.mathsgrade8amharic.contents.TitleContents;
 import com.beckytech.mathsgrade8amharic.model.Model;
+import com.beckytech.mathsgrade8amharic.model.MoreAppsModel;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AudienceNetworkAds;
+import com.facebook.ads.InterstitialAdListener;
 import com.github.barteksc.pdfviewer.BuildConfig;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -40,7 +50,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Adapter.onBookClicked{
+public class MainActivity extends AppCompatActivity implements Adapter.onBookClicked, MoreAppsAdapter.MoreAppsClicked {
 
     private InterstitialAd mInterstitialAd;
     private final List<Model> list = new ArrayList<>();
@@ -49,10 +59,20 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     private final ContentEndPage endPage = new ContentEndPage();
     private final SubTitleContents subTitleContents = new SubTitleContents();
 
+    private final MoreAppImages images = new MoreAppImages();
+    private final MoreAppUrl url = new MoreAppUrl();
+    private final MoreAppsName appsName = new MoreAppsName();
+    private List<MoreAppsModel> moreAppsModelList;
+
+    com.facebook.ads.InterstitialAd interstitialAd;
+    private final String TAG = BookDetailActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
+
+        callAds();
 
         AppRate.app_launched(this);
 
@@ -79,10 +99,22 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
             return true;
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_main_item);
         getData();
         Adapter adapter = new Adapter(list, this);
         recyclerView.setAdapter(adapter);
+
+        RecyclerView moreAppsRecyclerView = findViewById(R.id.moreAppsRecycler);
+        getMoreApps();
+        MoreAppsAdapter moreAppsAdapter = new MoreAppsAdapter(moreAppsModelList, this);
+        moreAppsRecyclerView.setAdapter(moreAppsAdapter);
+    }
+
+    private void getMoreApps() {
+        moreAppsModelList = new ArrayList<>();
+        for (int i = 0; i < appsName.appNames.length; i++) {
+            moreAppsModelList.add(new MoreAppsModel(appsName.appNames[i], url.url[i], images.images[i]));
+        }
     }
 
     private void getData() {
@@ -92,6 +124,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
                     endPage.pageEnd[i],
                     startPage.pageStart[i]));
         }
+    }
+
+    @Override
+    public void appClicked(MoreAppsModel model) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(model.getUrl()));
+        startActivity(intent);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -256,5 +295,64 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
                         mInterstitialAd = null;
                     }
                 });
+    }
+
+    private void callAds() {
+        AudienceNetworkAds.initialize(this);
+
+        //        513372960928869_513374324262066
+        com.facebook.ads.AdView adView = new com.facebook.ads.AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.banner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
+
+        interstitialAd = new com.facebook.ads.InterstitialAd(this, "587359836775376_587369096774450");
+        // Create listeners for the Interstitial Ad
+        InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
+            @Override
+            public void onInterstitialDisplayed(Ad ad) {
+                // Interstitial ad displayed callback
+                Log.e(TAG, "Interstitial ad displayed.");
+            }
+
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+                // Interstitial dismissed callback
+                Log.e(TAG, "Interstitial ad dismissed.");
+            }
+
+            @Override
+            public void onError(Ad ad, com.facebook.ads.AdError adError) {
+                // Ad error callback
+                Log.e(TAG, "Interstitial ad failed to load: " + adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                // Interstitial ad is loaded and ready to be displayed
+                Log.d(TAG, "Interstitial ad is loaded and ready to be displayed!");
+                // Show the ad
+                interstitialAd.show();
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Ad clicked callback
+                Log.d(TAG, "Interstitial ad clicked!");
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Ad impression logged callback
+                Log.d(TAG, "Interstitial ad impression logged!");
+            }
+        };
+
+        // For auto play video ads, it's recommended to load the ad
+        // at least 30 seconds before it is shown
+        interstitialAd.loadAd(
+                interstitialAd.buildLoadAdConfig()
+                        .withAdListener(interstitialAdListener)
+                        .build());
     }
 }

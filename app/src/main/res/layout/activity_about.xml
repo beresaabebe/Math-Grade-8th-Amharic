@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="100"
     android:background="@color/white"
-    android:orientation="vertical"
-    tools:context=".activity.AboutActivity">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -56,18 +56,20 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                ads:cardElevation="5dp"
-                ads:cardMaxElevation="10dp"
-                ads:cardCornerRadius="100dp"
-                android:layout_gravity="center_horizontal">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="@string/app_name"
-                android:scaleType="centerCrop"
-                android:src="@drawable/icon" />
+                android:layout_margin="5dp"
+                ads:cardCornerRadius="100dp"
+                ads:cardElevation="10dp"
+                ads:cardMaxElevation="15dp">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon" />
 
             </androidx.cardview.widget.CardView>
 
@@ -86,10 +88,36 @@
                 android:padding="10dp" />
 
             <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="5dp"
                 android:background="#D6D5D5" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Headline3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Contact us"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:spanCount="2"
+                    tools:listitem="@layout/about_list_item" />
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,44 +127,49 @@
                     android:id="@+id/v"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_centerInParent="true"
                     android:fontFamily="serif"
-                    android:textSize="16sp"
                     android:padding="10dp"
-                    android:paddingEnd="0dp"
                     android:paddingStart="0dp"
-                    android:text="@string/version" />
+                    android:paddingEnd="0dp"
+                    android:text="Version - "
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/version_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:fontFamily="serif"
-                    android:textSize="16sp"
                     android:layout_toEndOf="@+id/v"
+                    android:fontFamily="serif"
                     android:padding="10dp"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
-                    android:text="@string/app_name" />
+                    android:text="@string/app_name"
+                    android:textSize="16sp" />
 
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/banner_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id" />
 
         </LinearLayout>
 
     </ScrollView>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id" />
 
 </RelativeLayout>
