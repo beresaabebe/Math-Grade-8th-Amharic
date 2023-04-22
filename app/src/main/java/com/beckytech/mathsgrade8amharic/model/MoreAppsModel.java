@@ -15,20 +15,20 @@ public class MoreAppsModel {
         return appName;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public int getImages() {
-        return images;
-    }
-
     public void setAppName(String appName) {
         this.appName = appName;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getImages() {
+        return images;
     }
 
     public void setImages(int images) {

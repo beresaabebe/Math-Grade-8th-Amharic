@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -52,20 +55,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Adapter.onBookClicked, MoreAppsAdapter.MoreAppsClicked {
 
-    private InterstitialAd mInterstitialAd;
     private final List<Model> list = new ArrayList<>();
     private final ContentStartPage startPage = new ContentStartPage();
     private final TitleContents titleContents = new TitleContents();
     private final ContentEndPage endPage = new ContentEndPage();
     private final SubTitleContents subTitleContents = new SubTitleContents();
-
     private final MoreAppImages images = new MoreAppImages();
     private final MoreAppUrl url = new MoreAppUrl();
     private final MoreAppsName appsName = new MoreAppsName();
-    private List<MoreAppsModel> moreAppsModelList;
-
-    com.facebook.ads.InterstitialAd interstitialAd;
     private final String TAG = BookDetailActivity.class.getSimpleName();
+    com.facebook.ads.InterstitialAd interstitialAd;
+    private InterstitialAd mInterstitialAd;
+    private List<MoreAppsModel> moreAppsModelList;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +83,15 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
 
         setAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        //get the reference to your FrameLayout
+        FrameLayout adContainerView = findViewById(R.id.adView_container);
+        //Create an AdView and put it into your FrameLayout
+        adView = new AdView(this);
+        adContainerView.addView(adView);
+        adView.setAdUnitId("ca-app-pub-8504401574247581/9009648795");
+//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        //start requesting banner ads
+        loadBanner();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -354,5 +362,33 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
                 interstitialAd.buildLoadAdConfig()
                         .withAdListener(interstitialAdListener)
                         .build());
+    }
+
+    private com.google.android.gms.ads.AdSize getAdSize() {
+        //Determine the screen width to use for the ad width.
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        //you can also pass your selected width here in dp
+        int adWidth = (int) (widthPixels / density);
+
+        //return the optimal size depends on your orientation (landscape or portrait)
+        return com.google.android.gms.ads.AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
+    }
+
+    private void loadBanner() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+
+        com.google.android.gms.ads.AdSize adSize = getAdSize();
+        // Set the adaptive ad size to the ad view.
+        adView.setAdSize(adSize);
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest);
     }
 }
