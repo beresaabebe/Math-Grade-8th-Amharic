@@ -65,7 +65,6 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         adView.setAdUnitId("ca-app-pub-8504401574247581/9331580363");
 //        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
 
-
         //start requesting banner ads
         loadBanner();
 
