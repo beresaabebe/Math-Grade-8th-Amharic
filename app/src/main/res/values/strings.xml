@@ -16,4 +16,6 @@
     <string name="test_interstitial_ads_unit_id">ca-app-pub-8504401574247581/5453660823</string>
     <string name="download_more_apps">Download more apps</string>
     <string name="banner_ad_unit_main">ca-app-pub-8504401574247581/9009648795</string>
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy">Privacy</string>
 </resources>

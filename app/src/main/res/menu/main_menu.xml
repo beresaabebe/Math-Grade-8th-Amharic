@@ -12,6 +12,11 @@
         android:title="@string/rate"/>
 
     <item
+        android:id="@+id/action_privacy"
+        android:icon="@drawable/baseline_privacy_tip_24"
+        android:title="@string/privacy" />
+
+    <item
         android:id="@+id/action_about_us"
         android:icon="@drawable/ic_baseline_person_24"
         android:title="@string/about_us" />

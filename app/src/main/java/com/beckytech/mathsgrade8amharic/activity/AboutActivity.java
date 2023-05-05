@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,12 +24,10 @@ import com.beckytech.mathsgrade8amharic.model.AboutModel;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
 import com.facebook.ads.InterstitialAd;
 import com.facebook.ads.InterstitialAdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,20 +48,6 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-
-        MobileAds.initialize(this, initializationStatus -> {
-        });
-
-        //get the reference to your FrameLayout
-        FrameLayout adContainerView = findViewById(R.id.adView_container);
-        //Create an AdView and put it into your FrameLayout
-        adView = new AdView(this);
-        adContainerView.addView(adView);
-        adView.setAdUnitId("ca-app-pub-8504401574247581/9331580363");
-//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-
-        //start requesting banner ads
-        loadBanner();
 
         callAds();
 
@@ -117,10 +98,10 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         AudienceNetworkAds.initialize(this);
 
 //        513372960928869_513374324262066
-        adView1 = new com.facebook.ads.AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
+        adView = new AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
         LinearLayout adContainer = findViewById(R.id.banner_container);
-        adContainer.addView(adView1);
-        adView1.loadAd();
+        adContainer.addView(adView);
+        adView.loadAd();
 
         interstitialAd = new InterstitialAd(this, "587359836775376_587361706775189");
         // Create listeners for the Interstitial Ad
@@ -195,39 +176,9 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
     }
     @Override
     protected void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
         if (interstitialAd != null) {
             interstitialAd.destroy();
         }
         super.onDestroy();
-    }
-    private com.google.android.gms.ads.AdSize getAdSize() {
-        //Determine the screen width to use for the ad width.
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-
-        //you can also pass your selected width here in dp
-        int adWidth = (int) (widthPixels / density);
-
-        //return the optimal size depends on your orientation (landscape or portrait)
-        return com.google.android.gms.ads.AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
-    }
-
-    private void loadBanner() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-
-        com.google.android.gms.ads.AdSize adSize = getAdSize();
-        // Set the adaptive ad size to the ad view.
-        adView.setAdSize(adSize);
-
-        // Start loading the ad in the background.
-        adView.loadAd(adRequest);
     }
 }

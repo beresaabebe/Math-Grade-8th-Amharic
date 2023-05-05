@@ -17,15 +17,23 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+        <activity android:name=".activity.PrivacyActivity"
+            android:hardwareAccelerated="true"
+            android:exported="false"/>
+
         <activity android:name=".activity.AboutActivity"
             android:hardwareAccelerated="true"
             android:exported="false"/>
+
         <activity android:name=".MainActivity"
             android:hardwareAccelerated="true"
             android:exported="false"/>
+
         <activity android:name=".activity.BookDetailActivity"
             android:hardwareAccelerated="true"
             android:exported="false"/>
+
         <activity
             android:name=".activity.SplashActivity"
             android:hardwareAccelerated="true"
