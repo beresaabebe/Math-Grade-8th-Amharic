@@ -16,21 +16,23 @@
             android:id="@+id/recyclerView_main_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/list_item" />
 
+        <LinearLayout
+            android:id="@+id/banner_container_between"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:orientation="vertical" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/moreAppsRecycler"
             android:layout_width="match_parent"
+            android:nestedScrollingEnabled="false"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/moreapps_list_item" />
 
         <LinearLayout

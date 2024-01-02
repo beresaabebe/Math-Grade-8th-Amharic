@@ -1,7 +1,7 @@
 package com.beckytech.mathsgrade8amharic.contents;
 
 public class TitleContents {
-    public String[] title = {
+    public static String[] title = {
             "ንብብር ቁጥሮች",
             "ዳግም ርቢዎች፣ ዳግም ዘሮች፣ ሳልስ ርቢዎች እና ሳልስ ዘሮች",
             "መስመራዊ የእኩልነት ዓረፍተ ነገሮች እና የያለእኩልነት ዓረፍተ ነገሮች",

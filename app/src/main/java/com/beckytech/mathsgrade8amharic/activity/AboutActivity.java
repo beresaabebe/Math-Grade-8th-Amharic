@@ -35,14 +35,12 @@ import java.util.Locale;
 
 public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnLinkClicked {
 
-    com.facebook.ads.InterstitialAd interstitialAd;
     private final String TAG = AboutActivity.class.getSimpleName();
-    com.facebook.ads.AdView adView1;
-    List<AboutModel> modelList;
     private final AboutImages images = new AboutImages();
     private final AboutName name = new AboutName();
     private final AboutUrlContents urlContents = new AboutUrlContents();
-    private AdView adView;
+    List<AboutModel> modelList;
+    private com.facebook.ads.InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +49,7 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
 
         callAds();
 
-        findViewById(R.id.ib_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.ib_back).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         String str = "About us";
         TextView title = findViewById(R.id.tv_title);
         title.setText(str);
@@ -60,7 +58,7 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         webView.loadUrl("file:///android_asset/about.html");
 
         TextView version = findViewById(R.id.version_tv);
-        version.setText(String.format(Locale.ENGLISH," %s", BuildConfig.VERSION_NAME));
+        version.setText(String.format(Locale.ENGLISH, " %s", BuildConfig.VERSION_NAME));
 
         ImageView imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(view -> {
@@ -94,11 +92,12 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         startActivity(intent);
         showAdWithDelay();
     }
+
     private void callAds() {
         AudienceNetworkAds.initialize(this);
 
 //        513372960928869_513374324262066
-        adView = new AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
+        AdView adView = new AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
         LinearLayout adContainer = findViewById(R.id.banner_container);
         adContainer.addView(adView);
         adView.loadAd();
@@ -157,11 +156,11 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             // Check if interstitialAd has been loaded successfully
-            if(interstitialAd == null || !interstitialAd.isAdLoaded()) {
+            if (interstitialAd == null || !interstitialAd.isAdLoaded()) {
                 return;
             }
             // Check if ad is already expired or invalidated, and do not show ad if that is the case. You will not get paid to show an invalidated ad.
-            if(interstitialAd.isAdInvalidated()) {
+            if (interstitialAd.isAdInvalidated()) {
                 return;
             }
             // Show the ad
@@ -169,11 +168,6 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         }, 1000 * 60 * 2); // Show the ad after 15 minutes
     }
 
-    @Override
-    public void onBackPressed() {
-        showAdWithDelay();
-        super.onBackPressed();
-    }
     @Override
     protected void onDestroy() {
         if (interstitialAd != null) {

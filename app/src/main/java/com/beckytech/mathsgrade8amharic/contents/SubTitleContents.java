@@ -1,7 +1,7 @@
 package com.beckytech.mathsgrade8amharic.contents;
 
 public class SubTitleContents {
-    public String[] subTitle = {
+    public static String[] subTitle = {
             "ምዕረፍ 1",
             "ምዕረፍ 2",
             "ምዕረፍ 3",

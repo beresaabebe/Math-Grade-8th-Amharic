@@ -1,12 +1,12 @@
 package com.beckytech.mathsgrade8amharic;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -48,15 +48,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements Adapter.onBookClicked, MoreAppsAdapter.MoreAppsClicked {
 
     private final List<Model> list = new ArrayList<>();
-    private final ContentStartPage startPage = new ContentStartPage();
-    private final TitleContents titleContents = new TitleContents();
-    private final ContentEndPage endPage = new ContentEndPage();
-    private final SubTitleContents subTitleContents = new SubTitleContents();
     private final MoreAppImages images = new MoreAppImages();
     private final MoreAppUrl url = new MoreAppUrl();
     private final MoreAppsName appsName = new MoreAppsName();
     private final String TAG = BookDetailActivity.class.getSimpleName();
-    com.facebook.ads.InterstitialAd interstitialAd;
+    private com.facebook.ads.InterstitialAd interstitialAd;
     private List<MoreAppsModel> moreAppsModelList;
 
     @Override
@@ -101,11 +97,12 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     }
 
     private void getData() {
-        for (int i = 0; i < titleContents.title.length; i++) {
-            list.add(new Model(titleContents.title[i].substring(0, 1).toUpperCase() + "" + titleContents.title[i].substring(1).toLowerCase(),
-                    subTitleContents.subTitle[i],
-                    endPage.pageEnd[i],
-                    startPage.pageStart[i]));
+        for (int i = 0; i < TitleContents.title.length; i++) {
+            list.add(new Model(TitleContents.title[i].substring(0, 1).toUpperCase() +
+                    TitleContents.title[i].substring(1).toLowerCase(),
+                    SubTitleContents.subTitle[i],
+                    ContentEndPage.pageEnd[i],
+                    ContentStartPage.pageStart[i]));
         }
     }
 
@@ -149,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         }
 
         if (item.getItemId() == R.id.action_update) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-            int lastVersion = pref.getInt("lastVersion", 0);
+            SharedPreferences pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+            int lastVersion = pref.getInt("lastVersion", com.beckytech.mathsgrade8amharic.BuildConfig.VERSION_CODE);
             String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
             if (lastVersion < BuildConfig.VERSION_CODE) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
@@ -161,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         }
         if (item.getItemId() == R.id.action_exit) {
             showAdWithDelay();
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.MyAlertDialog);
             builder.setTitle(getString(R.string.exit))
                     .setMessage("መዝጋት ይፈልጋሉ?")
                     .setPositiveButton("አዎ", (dialog, which) -> {
@@ -179,14 +176,19 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         showAdWithDelay();
         startActivity(new Intent(this, BookDetailActivity.class).putExtra("data", model));
     }
+
     private void callAds() {
         AudienceNetworkAds.initialize(this);
 
-        //        513372960928869_513374324262066
-        AdView adView = new AdView(this, "587359836775376_623450629832963", AdSize.BANNER_HEIGHT_50);
-        LinearLayout adContainer = findViewById(R.id.banner_container);
-        adContainer.addView(adView);
-        adView.loadAd();
+//        AdView adView = new AdView(this, "587359836775376_623450629832963", AdSize.BANNER_HEIGHT_50);
+//        LinearLayout adContainer = findViewById(R.id.banner_container);
+//        adContainer.addView(adView);
+//        adView.loadAd();
+
+        AdView adView_between = new AdView(this, "587359836775376_623450629832963", AdSize.RECTANGLE_HEIGHT_250);
+        LinearLayout adContaine_between = findViewById(R.id.banner_container_between);
+        adContaine_between.addView(adView_between);
+        adView_between.loadAd();
 
         interstitialAd = new InterstitialAd(this, "587359836775376_587369076774452");
         // Create listeners for the Interstitial Ad
@@ -237,15 +239,16 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
                         .withAdListener(interstitialAdListener)
                         .build());
     }
+
     private void showAdWithDelay() {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             // Check if interstitialAd has been loaded successfully
-            if(interstitialAd == null || !interstitialAd.isAdLoaded()) {
+            if (interstitialAd == null || !interstitialAd.isAdLoaded()) {
                 return;
             }
             // Check if ad is already expired or invalidated, and do not show ad if that is the case. You will not get paid to show an invalidated ad.
-            if(interstitialAd.isAdInvalidated()) {
+            if (interstitialAd.isAdInvalidated()) {
                 return;
             }
             // Show the ad

@@ -1,7 +1,7 @@
 package com.beckytech.mathsgrade8amharic.contents;
 
 public class ContentEndPage {
-    public int[] pageEnd = {
+    public static int[] pageEnd = {
             41,
             70,
             86,
