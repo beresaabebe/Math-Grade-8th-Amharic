@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +34,8 @@ import com.beckytech.mathsgrade8amharic.contents.TitleContents;
 import com.beckytech.mathsgrade8amharic.model.Model;
 import com.beckytech.mathsgrade8amharic.model.MoreAppsModel;
 import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     private final String TAG = BookDetailActivity.class.getSimpleName();
     private com.facebook.ads.InterstitialAd interstitialAd;
     private List<MoreAppsModel> moreAppsModelList;
+    private DrawerLayout drawerLayout;
+    private AdView adView;
+    private AdView adView_between;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
@@ -115,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
 
     @SuppressLint("UseCompatLoadingForDrawables")
     void MenuOptions(MenuItem item) {
+        drawerLayout.closeDrawer(GravityCompat.START);
         if (item.getItemId() == R.id.action_privacy) {
             startActivity(new Intent(this, PrivacyActivity.class));
         }
@@ -180,15 +187,55 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     private void callAds() {
         AudienceNetworkAds.initialize(this);
 
-//        AdView adView = new AdView(this, "587359836775376_623450629832963", AdSize.BANNER_HEIGHT_50);
-//        LinearLayout adContainer = findViewById(R.id.banner_container);
-//        adContainer.addView(adView);
-//        adView.loadAd();
+        adView = new AdView(this, "587359836775376_587362716775088", AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.banner_container);
+        adContainer.addView(adView);
+        adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Toast.makeText(MainActivity.this, "onError "+adError.getErrorMessage(), Toast.LENGTH_SHORT).show();
+            }
 
-        AdView adView_between = new AdView(this, "587359836775376_623450629832963", AdSize.RECTANGLE_HEIGHT_250);
-        LinearLayout adContaine_between = findViewById(R.id.banner_container_between);
-        adContaine_between.addView(adView_between);
-        adView_between.loadAd();
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Toast.makeText(MainActivity.this, "onAdLoaded "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Toast.makeText(MainActivity.this, "onAdClicked "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Toast.makeText(MainActivity.this, "onLoggingImpression "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+        }).build());
+
+        adView_between = new AdView(this, "587359836775376_1016963807148308", AdSize.RECTANGLE_HEIGHT_250);
+        LinearLayout adContainer_between = findViewById(R.id.banner_container_between);
+        adContainer_between.addView(adView_between);
+        adView_between.loadAd(adView_between.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Toast.makeText(MainActivity.this, "onError "+adError.getErrorMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Toast.makeText(MainActivity.this, "onAdLoaded "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Toast.makeText(MainActivity.this, "onAdClicked "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Toast.makeText(MainActivity.this, "onLoggingImpression "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
+            }
+        }).build());
 
         interstitialAd = new InterstitialAd(this, "587359836775376_587369076774452");
         // Create listeners for the Interstitial Ad
@@ -232,8 +279,6 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
             }
         };
 
-        // For auto play video ads, it's recommended to load the ad
-        // at least 30 seconds before it is shown
         interstitialAd.loadAd(
                 interstitialAd.buildLoadAdConfig()
                         .withAdListener(interstitialAdListener)
@@ -256,4 +301,14 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         }, 1000 * 60 * 2); // Show the ad after 15 minutes
     }
 
+    @Override
+    protected void onDestroy() {
+        if (adView != null)
+            adView.destroy();
+
+        if (adView_between != null)
+            adView_between.destroy();
+
+        super.onDestroy();
+    }
 }
