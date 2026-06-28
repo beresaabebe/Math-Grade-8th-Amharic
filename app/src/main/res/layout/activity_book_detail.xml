@@ -27,22 +27,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/back_book_detail"
-            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title_book_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:fontFamily="serif"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:text="@string/app_name"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/title_book_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fontFamily="serif"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="@string/app_name"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/sub_title_book_detail"
@@ -55,51 +54,24 @@
                 android:singleLine="true"
                 android:text="@string/app_name"
                 android:textColor="#555555"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </RelativeLayout>
 
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/pdfView"
-        android:layout_below="@id/toolbar_Rl"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2_book_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/collapsible_ad_container"
+        android:layout_below="@id/toolbar_Rl" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:background="@android:color/transparent"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/prevButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/previous_button_bg"
-            android:contentDescription="@string/previous"
-            android:src="@drawable/baseline_arrow_upward_24" />
-
-        <ImageButton
-            android:id="@+id/nextButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/next_button_bg"
-            android:contentDescription="@string/next"
-            android:src="@drawable/baseline_arrow_downward_24" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/banner_container"
+    <FrameLayout
+        android:id="@+id/collapsible_ad_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical" />
+        android:minHeight="50dp" />
 
 </RelativeLayout>

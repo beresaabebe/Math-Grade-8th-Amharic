@@ -1,25 +1,38 @@
 <resources>
     <string name="app_name">ሒሳብ የተማሪ መጽሐፍት 8ኛ ክፍል</string>
-    <string name="about_us">ስለ እኛ</string>
-    <string name="more_apps">ተጨማሪ መተግበሪያዎች</string>
-    <string name="rate">ደረጃ መስጠት</string>
-    <string name="update">አዘምን</string>
-    <string name="share">አጋራ</string>
-    <string name="exit">ውጣ</string>
+    <string name="about_us">About Us</string>
+    <string name="more_apps">More Apps</string>
+    <string name="rate">Rate Us</string>
+    <string name="update">Update</string>
+    <string name="share">Share</string>
+    <string name="exit">Exit</string>
     <string name="change_style">Change style</string>
     <string name="website">Website</string>
     <string name="email">Email</string>
     <string name="facebook">Facebook</string>
     <string name="phone">Phone</string>
     <string name="version">Version - </string>
-    <string name="banner_ad_unit_id">ca-app-pub-8504401574247581/4981219237</string>
-    <string name="test_interstitial_ads_unit_id">ca-app-pub-8504401574247581/5453660823</string>
+
+    <string name="google_banner_ad_unit_id" translatable="false">ca-app-pub-8504401574247581/4981219237</string>
+    <string name="google_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/5453660823</string>
+    <string name="google_app_open_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/6575170803</string>
+    <string name="google_native_ad_unit_id" translatable="false">ca-app-pub-8504401574247581/5297457079</string>
+    <string name="google_rewarded_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/2780928777</string>
+    <string name="google_rewarded_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/6430575340</string>
+
     <string name="download_more_apps">Download more apps</string>
-    <string name="banner_ad_unit_main">ca-app-pub-8504401574247581/9009648795</string>
+    <string name="banner_ad_unit_main" translatable="false">ca-app-pub-8504401574247581/9009648795</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy">Privacy</string>
-    <string name="contact_us">Contact us</string>
+    <string name="contact_us">Contact Us</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="download_now">Download Now</string>
+
+    <string name="rate_1_star">Bad</string>
+    <string name="rate_2_star">Not good</string>
+    <string name="rate_3_star">Somewhat good</string>
+    <string name="rate_4_star">Very good</string>
+    <string name="rate_5_star">Excellent</string>
+    <string name="welcome_rate_instruction">Please rate us 5 stars to support us!</string>
 </resources>

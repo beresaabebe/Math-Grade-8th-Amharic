@@ -1,15 +1,11 @@
 package com.beckytech.mathsgrade8amharic;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,8 +20,6 @@ import com.beckytech.mathsgrade8amharic.activity.BookDetailActivity;
 import com.beckytech.mathsgrade8amharic.activity.PrivacyActivity;
 import com.beckytech.mathsgrade8amharic.adapter.Adapter;
 import com.beckytech.mathsgrade8amharic.adapter.MoreAppsAdapter;
-import com.beckytech.mathsgrade8amharic.contents.ContentEndPage;
-import com.beckytech.mathsgrade8amharic.contents.ContentStartPage;
 import com.beckytech.mathsgrade8amharic.contents.MoreAppImages;
 import com.beckytech.mathsgrade8amharic.contents.MoreAppUrl;
 import com.beckytech.mathsgrade8amharic.contents.MoreAppsName;
@@ -33,15 +27,6 @@ import com.beckytech.mathsgrade8amharic.contents.SubTitleContents;
 import com.beckytech.mathsgrade8amharic.contents.TitleContents;
 import com.beckytech.mathsgrade8amharic.model.Model;
 import com.beckytech.mathsgrade8amharic.model.MoreAppsModel;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.ads.AudienceNetworkAds;
-import com.facebook.ads.InterstitialAd;
-import com.facebook.ads.InterstitialAdListener;
-import com.github.barteksc.pdfviewer.BuildConfig;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
@@ -54,21 +39,21 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     private final MoreAppImages images = new MoreAppImages();
     private final MoreAppUrl url = new MoreAppUrl();
     private final MoreAppsName appsName = new MoreAppsName();
-    private final String TAG = BookDetailActivity.class.getSimpleName();
-    private com.facebook.ads.InterstitialAd interstitialAd;
     private List<MoreAppsModel> moreAppsModelList;
     private DrawerLayout drawerLayout;
-    private AdView adView;
-    private AdView adView_between;
+    private AdManager adManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
 
-        callAds();
+        adManager = new AdManager();
+        adManager.loadCollapsibleBanner(this, findViewById(R.id.banner_container));
+        adManager.loadInterstitial(this);
 
         AppRate.app_launched(this);
+        AppUpdateReviewHelper.checkUpdate(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,12 +88,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
     }
 
     private void getData() {
+        list.clear();
         for (int i = 0; i < TitleContents.title.length; i++) {
             list.add(new Model(TitleContents.title[i].substring(0, 1).toUpperCase() +
                     TitleContents.title[i].substring(1).toLowerCase(),
                     SubTitleContents.subTitle[i],
-                    ContentEndPage.pageEnd[i],
-                    ContentStartPage.pageStart[i]));
+                    0, // not used in new flow
+                    0)); // not used in new flow
         }
     }
 
@@ -126,15 +112,15 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
             startActivity(new Intent(this, PrivacyActivity.class));
         }
         if (item.getItemId() == R.id.action_about_us) {
-            showAdWithDelay();
-            startActivity(new Intent(this, AboutActivity.class));
+            adManager.showInterstitial(this, () -> startActivity(new Intent(this, AboutActivity.class)));
         }
 
         if (item.getItemId() == R.id.action_rate) {
-            showAdWithDelay();
-            String pkg = getPackageName();
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + pkg)));
+            adManager.showInterstitial(this, () -> {
+                String pkg = getPackageName();
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + pkg)));
+            });
         }
 
         if (item.getItemId() == R.id.action_more_apps) {
@@ -143,172 +129,36 @@ public class MainActivity extends AppCompatActivity implements Adapter.onBookCli
         }
 
         if (item.getItemId() == R.id.action_share) {
-            showAdWithDelay();
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
-            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT, "Download this app from Play store \n" + url);
-            startActivity(Intent.createChooser(intent, "Choose to send"));
+            adManager.showInterstitial(this, () -> {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                intent.putExtra(Intent.EXTRA_TEXT, "Download this app from Play store \n" + url);
+                startActivity(Intent.createChooser(intent, "Choose to send"));
+            });
         }
 
         if (item.getItemId() == R.id.action_update) {
-            SharedPreferences pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-            int lastVersion = pref.getInt("lastVersion", com.beckytech.mathsgrade8amharic.BuildConfig.VERSION_CODE);
-            String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
-            if (lastVersion < BuildConfig.VERSION_CODE) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                Toast.makeText(this, "New update is available download it from play store!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No update available!", Toast.LENGTH_SHORT).show();
-            }
+            AppUpdateReviewHelper.checkUpdate(this);
         }
         if (item.getItemId() == R.id.action_exit) {
-            showAdWithDelay();
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.MyAlertDialog);
-            builder.setTitle(getString(R.string.exit))
-                    .setMessage("መዝጋት ይፈልጋሉ?")
-                    .setPositiveButton("አዎ", (dialog, which) -> {
-                        System.exit(0);
-                        finish();
-                    })
-                    .setNegativeButton("ተወው", (dialog, which) -> dialog.dismiss())
-                    .setBackground(getResources().getDrawable(R.drawable.nav_header_bg, null))
-                    .show();
+            adManager.showInterstitial(this, () -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.MyAlertDialog);
+                builder.setTitle(getString(R.string.exit))
+                        .setMessage("Do you want to exit?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            finish();
+                            System.exit(0);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                        .show();
+            });
         }
     }
 
     @Override
     public void clickedBook(Model model) {
-        showAdWithDelay();
-        startActivity(new Intent(this, BookDetailActivity.class).putExtra("data", model));
-    }
-
-    private void callAds() {
-        AudienceNetworkAds.initialize(this);
-
-        adView = new AdView(this, "587359836775376_587362716775088", AdSize.BANNER_HEIGHT_50);
-        LinearLayout adContainer = findViewById(R.id.banner_container);
-        adContainer.addView(adView);
-        adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
-            @Override
-            public void onError(Ad ad, AdError adError) {
-                Toast.makeText(MainActivity.this, "onError "+adError.getErrorMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                Toast.makeText(MainActivity.this, "onAdLoaded "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-                Toast.makeText(MainActivity.this, "onAdClicked "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-                Toast.makeText(MainActivity.this, "onLoggingImpression "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-        }).build());
-
-        adView_between = new AdView(this, "587359836775376_1016963807148308", AdSize.RECTANGLE_HEIGHT_250);
-        LinearLayout adContainer_between = findViewById(R.id.banner_container_between);
-        adContainer_between.addView(adView_between);
-        adView_between.loadAd(adView_between.buildLoadAdConfig().withAdListener(new AdListener() {
-            @Override
-            public void onError(Ad ad, AdError adError) {
-                Toast.makeText(MainActivity.this, "onError "+adError.getErrorMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                Toast.makeText(MainActivity.this, "onAdLoaded "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-                Toast.makeText(MainActivity.this, "onAdClicked "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-                Toast.makeText(MainActivity.this, "onLoggingImpression "+ad.getPlacementId(), Toast.LENGTH_SHORT).show();
-            }
-        }).build());
-
-        interstitialAd = new InterstitialAd(this, "587359836775376_587369076774452");
-        // Create listeners for the Interstitial Ad
-        InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-            @Override
-            public void onInterstitialDisplayed(Ad ad) {
-                // Interstitial ad displayed callback
-                Log.e(TAG, "Interstitial ad displayed.");
-            }
-
-            @Override
-            public void onInterstitialDismissed(Ad ad) {
-                // Interstitial dismissed callback
-                Log.e(TAG, "Interstitial ad dismissed.");
-            }
-
-            @Override
-            public void onError(Ad ad, com.facebook.ads.AdError adError) {
-                // Ad error callback
-                Log.e(TAG, "Interstitial ad failed to load: " + adError.getErrorMessage());
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                // Interstitial ad is loaded and ready to be displayed
-                Log.d(TAG, "Interstitial ad is loaded and ready to be displayed!");
-                // Show the ad
-                interstitialAd.show();
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-                // Ad clicked callback
-                Log.d(TAG, "Interstitial ad clicked!");
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-                // Ad impression logged callback
-                Log.d(TAG, "Interstitial ad impression logged!");
-            }
-        };
-
-        interstitialAd.loadAd(
-                interstitialAd.buildLoadAdConfig()
-                        .withAdListener(interstitialAdListener)
-                        .build());
-    }
-
-    private void showAdWithDelay() {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            // Check if interstitialAd has been loaded successfully
-            if (interstitialAd == null || !interstitialAd.isAdLoaded()) {
-                return;
-            }
-            // Check if ad is already expired or invalidated, and do not show ad if that is the case. You will not get paid to show an invalidated ad.
-            if (interstitialAd.isAdInvalidated()) {
-                return;
-            }
-            // Show the ad
-            interstitialAd.show();
-        }, 1000 * 60 * 2); // Show the ad after 15 minutes
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (adView != null)
-            adView.destroy();
-
-        if (adView_between != null)
-            adView_between.destroy();
-
-        super.onDestroy();
+        adManager.showInterstitial(this, () -> startActivity(new Intent(this, BookDetailActivity.class).putExtra("data", model)));
     }
 }

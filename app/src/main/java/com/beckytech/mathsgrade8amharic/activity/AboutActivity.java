@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,7 +98,7 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
 
 //        513372960928869_513374324262066
         AdView adView = new AdView(this, "587359836775376_587361160108577", AdSize.BANNER_HEIGHT_50);
-        LinearLayout adContainer = findViewById(R.id.banner_container);
+        FrameLayout adContainer = findViewById(R.id.banner_container);
         adContainer.addView(adView);
         adView.loadAd();
 

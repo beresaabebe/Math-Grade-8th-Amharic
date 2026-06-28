@@ -20,12 +20,11 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/list_item" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/banner_container_between"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2dp"
-            android:orientation="vertical" />
+            android:padding="2dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/moreAppsRecycler"
@@ -35,11 +34,10 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/moreapps_list_item" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/banner_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

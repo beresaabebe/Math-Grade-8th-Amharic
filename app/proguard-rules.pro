@@ -1,21 +1,46 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# AdMob
+-keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.ads.mediation.** { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Facebook Audience Network
+-keep class com.facebook.ads.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Unity Ads
+-keep class com.unity3d.ads.** { *; }
+-keep class com.unity3d.services.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Firebase
+-keep class com.google.firebase.** { *; }
+
+# Play Core
+-keep class com.google.android.play.core.** { *; }
+
+# Models
+-keep class com.beckytech.mathsgrade8amharic.model.** { *; }
+
+# Support for 16KB and other crashes
+-keep class androidx.work.impl.** { *; }
+-keep class androidx.lifecycle.ProcessLifecycleOwnerInitializer { *; }
+
+# R8 missing classes rules
+-dontwarn com.facebook.infer.annotation.Nullsafe
+-dontwarn com.unity3d.ads.AdFormat
+-dontwarn com.unity3d.ads.IUnityAdsInitializationListener
+-dontwarn com.unity3d.ads.IUnityAdsLoadListener
+-dontwarn com.unity3d.ads.IUnityAdsShowListener
+-dontwarn com.unity3d.ads.IUnityAdsTokenListener
+-dontwarn com.unity3d.ads.TokenConfiguration
+-dontwarn com.unity3d.ads.UnityAds$UnityAdsInitializationError
+-dontwarn com.unity3d.ads.UnityAds$UnityAdsLoadError
+-dontwarn com.unity3d.ads.UnityAds$UnityAdsShowCompletionState
+-dontwarn com.unity3d.ads.UnityAds$UnityAdsShowError
+-dontwarn com.unity3d.ads.UnityAds
+-dontwarn com.unity3d.ads.UnityAdsLoadOptions
+-dontwarn com.unity3d.ads.UnityAdsShowOptions
+-dontwarn com.unity3d.ads.metadata.MediationMetaData
+-dontwarn com.unity3d.ads.metadata.MetaData
+-dontwarn com.unity3d.services.banners.BannerErrorCode
+-dontwarn com.unity3d.services.banners.BannerErrorInfo
+-dontwarn com.unity3d.services.banners.BannerView$IListener
+-dontwarn com.unity3d.services.banners.BannerView
+-dontwarn com.unity3d.services.banners.UnityBannerSize
